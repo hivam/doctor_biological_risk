@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record id="doctor_atencion_ries_bio_form_view" model="ir.ui.view">
+      <field name="name">doctor.atencion.ries.bio.form.view</field>
+      <field name="model">doctor.atencion.ries.bio</field>
+      <field name="arch" type="xml">
+        <form string="HC Riesgo Biológico" version="7.0">
+          <header>
+            <button string="Finalizar Atencion" name="button_closed" states="abierta" type="object" class="oe_highlight" groups="doctor.group_doctor_physician"/>
+            <field name="state" widget="statusbar" statusbar_visible="abierta,cerrada"/>
+          </header>
+          <group colspan='4' col='2'>
+            <fieldset class="fieldset_margen">
+            <legend class="texto_legend">Paciente</legend>
+            <group col='2'>
+              <field name='patient_photo' nolabel='1' widget="image" img_height="50" width="50" height="50"/>
+              <group col='1'>
+                <div>
+                  <h3>
+                    <field name='patient_id' nolabel='1' on_change="onchange_patient(patient_id)"/>
+                  </h3>
+                </div>
+                <group col='2'>
+                  <div>
+                    <field name='age_attention' nolabel='1' style="width:10%%"/>
+                    <field name='age_unit' nolabel='1' style="width:10%%"/> - de edad
+                  </div>
+                </group>
+              </group>
+              </group>
+              </fieldset>
+              <fieldset class="fieldset_margen">
+              <legend class="texto_legend">Medico</legend>
+              <group col='2'>
+              <field name='professional_photo' nolabel='1' widget="image" img_height="50" width="50" height="50"/>
+                <group col='1'>
+                <div>
+                  <field name='professional_id' nolabel='1' on_change="onchange_professional(professional_id)"/>
+                </div>
+                <group col='1'>
+                  <div>
+                    <field name='speciality' domain="[('name', '=', speciality)]" style="width:70%%"/>
+                  </div>
+                </group>
+                </group>
+                </group>
+                </fieldset>
+                </group>
+
+
+
+          <group colspan="6" col="4">
+              <field name="date_attention"/>
+              <field name="origin"/>
+          </group>
+
+          <group colspan="4" col="2">
+              <field name="motivo_consulta"/>
+              <field name="enfermedad_actual"/>
+              <field name="descripcion_accidente"/>
+          </group>
+
+          <fieldset class="fieldset_margen">
+              <legend class="texto_legend">Fecha del accidente</legend>
+              <group col="2" colspan="2">
+                <field name="fecha_del_accidente"/>
+              </group>
+          </fieldset>
+
+          <fieldset class="fieldset_margen">
+              <legend class="texto_legend">Toma de laboratorio inicial</legend>
+              <group col="4" colspan="2">
+                <field name="laboratorio_inicial_si" attrs="{'readonly': [('laboratorio_inicial_no','=', True)]}"/>
+                <field name="laboratorio_inicial_no" attrs="{'readonly': [('laboratorio_inicial_si','=', True)]}"/>
+              </group>
+          </fieldset>
+
+
+          <fieldset class="fieldset_margen">
+              <legend class="texto_legend">Toma de laboratorio a Fuente</legend>
+              <group col="4" colspan="2">
+                <field name="laboratorio_fuente_si" attrs="{'readonly': [('laboratorio_fuente_no','=', True)]}"/>
+                <field name="laboratorio_fuente_no" attrs="{'readonly': [('laboratorio_fuente_si','=', True)]}"/>
+              </group>
+          </fieldset>
+
+
+          <fieldset class="fieldset_margen">
+              <legend class="texto_legend">Recibo de Terapia Retroviral</legend>
+              <group col="4" colspan="2">
+                <field name="terapia_retroviral_si" attrs="{'readonly': [('terapia_retroviral_no','=', True)]}"/>
+                <field name="terapia_retroviral_no" attrs="{'readonly': [('terapia_retroviral_si','=', True)]}"/>
+                <field name="terapia_retroviral_cual" attrs="{'invisible': [('terapia_retroviral_si','=', False)]}"/>
+              </group>
+          </fieldset>
+
+          <fieldset class="fieldset_margen">
+              <legend class="texto_legend">Terapia antirretroviral</legend>
+              <group col="2" colspan="2">
+                <field name="numero_de_terapias"/>
+              </group>
+              <legend class="texto_legend">Presentó algún tipo de reacción con la terapia antirretroviral ?</legend>
+              <group col="4" colspan="2">
+                <field name="presento_reaccion_terapia_si" attrs="{'readonly': [('presento_reaccion_terapia_no','=', True)]}"/>
+                <field name="presento_reaccion_terapia_no" attrs="{'readonly': [('presento_reaccion_terapia_si','=', True)]}"/>
+              </group>
+          </fieldset>
+
+          <group col="2" colspan="2">
+            <field name="antecedentes_personales_patolo"/>
+          </group>
+
+          <fieldset class="fieldset_margen">
+            <legend class="texto_legend">Constantes Vitales</legend>
+            <group col="4" colspan="2">
+              <field name="signos_vitales_ids" nolabel="1">
+                <tree string="Tabla Signos Vitales" editable="top">
+                  <field name="heart_rate"/>
+                  <field name="respiratory_rate" />
+                  <field name="systolic"/>
+                  <field name="diastolic" />
+                  <field name="temperature"/>
+                  <field name="pulsioximetry" />
+                </tree>
+                <form string="Signos Vitales" >
+                  <notebook colspan="4" col='4'> 
+                    <page string="Signos Vitales">
+                        <group colspan='4' col='3'>
+                            <fieldset class="fieldset_margen">
+                            <legend class="texto_legend">Constantes Vitales</legend>
+                                <group >
+                                    <label for="heart_rate" string="Frecuencia cardiaca"/>
+                                    <field name='heart_rate' nolabel='1' style="width:5%%"/>
+                                    <label for="respiratory_rate" string="Respiratorio"/>
+                                    <field name='respiratory_rate' nolabel='1' style="width:5%%"/>
+                                </group>
+                            </fieldset>
+                            <fieldset class="fieldset_margen">
+                            <legend class="texto_legend">Presion Sanguinea</legend>
+                                <group>
+                                    <label for="systolic" string="Sistolica"/>
+                                    <field name='systolic' nolabel='1' style="width:5%%"/>
+                                    <label for="diastolic" string="Distolica"/>
+                                    <field name='diastolic' nolabel='1' style="width:5%%"/>
+                                </group>
+                            </fieldset>
+                            <fieldset class="fieldset_margen">
+                            <legend class="texto_legend">Temperatura</legend>
+                                <group >
+                                    <label for="temperature" string="Temperatura"/>
+                                    <field name='temperature' nolabel='1' style="width:5%%"/>
+                                </group>
+                            </fieldset>
+                            <fieldset class="fieldset_margen">
+                            <legend class="texto_legend">SpO2</legend>
+                                <group >
+                                    <label for="pulsioximetry" string="Pulsiosimetria"/>
+                                    <field name='pulsioximetry' nolabel='1' style="width:5%%"/>
+                                </group>
+                            </fieldset>
+                        </group>
+                    </page>
+                  </notebook>
+                </form>
+              </field>
+            </group>
+            <label for="hallazgos_positivos" string="Hallazgos positivos al examen fisico"/>
+            <field name="hallazgos_positivos"/>
+            <label for="plantilla_hallazgos_id" string="Plantilla"/>
+            <field name="plantilla_hallazgos_id" on_change='onchange_plantillas(plantilla_hallazgos_id, "hallazgos_positivos")' domain="[('tipo_plantilla', '=', '10')]"/>
+          </fieldset>
+
+          <fieldset>
+            <fieldset>
+              <legend class="texto_legend">Laboratorios Realizados</legend>
+              <field name="laboratorios_realizados" nolabel="1">
+                <tree string="Laboratorios Realizados" editable="top">
+                  <field name="laboratorio_id"/>
+                  <field name="fecha"/>
+                  <field name="resultado"/>
+                </tree>
+                <form string="Laboratorios Realizados">
+                  <group>
+                    <field name="laboratorio_id"/>
+                    <field name="fecha"/>
+                    <field name="resultado"/>
+                  </group>
+                </form>
+              </field>
+            </fieldset>
+            <fieldset>
+              <legend class="texto_legend">Laboratorios Realizados a la Fuente</legend>
+              <field name="laboratorios_realizados_fuente" nolabel="1">
+                <tree string="Laboratorios Realizados a la Fuente" editable="top">
+                  <field name="laboratorio_id"/>
+                  <field name="fecha"/>
+                  <field name="resultado"/>
+                </tree>
+                <form string="Laboratorios Realizados a la Fuente">
+                  <group>
+                    <field name="laboratorio_id"/>
+                    <field name="fecha"/>
+                    <field name="resultado"/>
+                  </group>
+                </form>
+              </field>
+            </fieldset>
+          </fieldset>
+
+          <group col="2" colspan="4">
+            <field name="estado_esquema_vacunacion"/>
+          </group>
+
+          <fieldset class="fieldset_margen">
+            <legend class="texto_legend">Diagnóstico</legend>
+            <group col="2" colspan="2">
+              <field name="diagnostico"/>
+              <field name="diseases_ids" colspan="4" nolabel="1">
+                  <tree string="Diseases" editable="bottom">
+                    <field name="diseases_id" />
+                    <field name="status"/>
+                    <field name="diseases_type"/>
+                  </tree>
+                <form string="Diseases">
+                  <group>
+                    <field name="diseases_id"/>
+                    <field name="status"/>
+                    <field name="diseases_type"/>
+                  </group>
+                </form>
+              </field>
+            </group>
+          </fieldset>
+
+          <fieldset class="fieldset_margen">
+            <legend class="texto_legend">Origen de la enfermedad</legend>
+            <field name="origen_enfermedad_id" domain="[('active','=',True)]"/>
+          </fieldset> 
+
+          <fieldset class="fieldset_margen">
+            <legend class="texto_legend">Tratamiento y Recomendaciones</legend>
+            <field name="tratamiento_recomendaciones"/>
+            <label for="plantilla_tratamiento_id" string="Plantilla"/>
+            <field name="plantilla_tratamiento_id" on_change='onchange_plantillas(plantilla_tratamiento_id, "tratamiento_recomendaciones")' domain="[('tipo_plantilla', '=', '11')]"/>
+          </fieldset> 
+
+
+          <fieldset class="fieldset_margen">
+            <legend class="texto_legend">Laboratorios de control</legend>
+            <field name="laboratorios_control"/>
+            <label for="plantilla_laboratorios_id" string="Plantilla"/>
+            <field name="plantilla_laboratorios_id" on_change='onchange_plantillas(plantilla_laboratorios_id, "laboratorios_control")' domain="[('tipo_plantilla', '=', '12')]"/>
+          </fieldset> 
+
+          <fieldset class="fieldset_margen">
+            <group col="4" colspan="2">
+              <field name="solicitud_consulta"/>
+              <field name="cierre_caso"/>
+            </group>
+          </fieldset> 
+
+
+       </form>
+      </field>
+    </record>
+
+    <record id="doctor_atencion_ries_bio_tree_view" model="ir.ui.view">
+      <field name="name">doctor.atencion.ries.bio.tree.view</field>
+      <field name="model">doctor.atencion.ries.bio</field>
+      <field name="arch" type="xml">
+        <tree string="HC Riesgo Biologico" create="false">
+          <field name="patient_id"/>
+          <field name="date_attention"/>
+          <field name="age_attention" string="Edad"/>
+          <field name="age_unit" string="Medidad"/>
+          <field name="professional_id"/>
+          <field name="speciality"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_doctor_atencion_ries_bio" model="ir.actions.act_window">
+      <field name="name">Atencion Riesgo Biológico</field>
+      <field name="res_model">doctor.atencion.ries.bio</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem action="action_doctor_atencion_ries_bio" id="item_doctor_riesgo_biologico" name="Atencion Riesgo Biológico" parent="doctor.menu_doctor_process" sequence="41"/>
+
+  </data>
+</openerp>

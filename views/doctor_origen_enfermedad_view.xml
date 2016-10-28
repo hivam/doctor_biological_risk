@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>							 <!-- doctor speciality Form View -->
+		<record model="ir.ui.view" id="view_doctor_origen_enfermedad">
+				<field name="name">Configurar Origen Enfermedad</field>
+				<field name="model">doctor.origen.enfermedad</field>
+				<field name="arch" type="xml">
+						<form string="Configurar Origen Enfermedad" version="7.0">
+								<label for="name" string="Nombre"/>
+								<field name="name"/>
+								<label for="active" string="Activo"/>
+								<field name="active"/>
+						</form>
+				</field>
+		</record>
+
+		<!-- doctor speciality Tree View -->
+		<record model="ir.ui.view" id="view_doctor_origen_enfermedad_tree">
+				<field name="name">Configurar Origen Enfermedad</field>
+				<field name="model">doctor.origen.enfermedad</field>
+				<field name="arch" type="xml">
+						<tree string="Configurar Origen Enfermedad" version="7.0">
+								<field name="name"/>
+						</tree>
+				</field>
+		</record>
+
+		<!-- doctor speciality Action -->
+		<record model="ir.actions.act_window" id="action_doctor_origen_enfermedad">
+				<field name="name">Configurar Origen Enfermedad</field>
+				<field name="res_model">doctor.origen.enfermedad</field>
+				<field name="view_type">form</field>
+				<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_doctor_origen_enfermedad" name="Conf. Origen Enfermedad" parent="doctor.menu_doctor_config" action="action_doctor_origen_enfermedad"/>
+
+
+	</data>
+</openerp>

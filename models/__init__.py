@@ -1,0 +1,5 @@
+import doctor_atencion_riesgo_biologico
+import doctor_signos_vitales
+import doctor_attentions_diseases_inherit
+import doctor_origen_enfermedad
+import doctor_laboratorio

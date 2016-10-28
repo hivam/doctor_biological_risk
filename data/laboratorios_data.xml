@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+    <record id="laboratorio_001" model="doctor.laboratorio">
+        <field name="name">VIH</field>
+        <field name="active" eval="True"/>
+    </record>
+     <record id="laboratorio_002" model="doctor.laboratorio">
+        <field name="name">Hepatitis C</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="laboratorio_003" model="doctor.laboratorio">
+        <field name="name">Anticuerpos Hepatitis B</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="laboratorio_004" model="doctor.laboratorio">
+        <field name="name">Serologia</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="laboratorio_005" model="doctor.laboratorio">
+        <field name="name">Antígeno de Superficie</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="laboratorio_006" model="doctor.laboratorio">
+        <field name="name">Anticore Ig M</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="laboratorio_007" model="doctor.laboratorio">
+        <field name="name">Otros</field>
+        <field name="active" eval="True"/>
+    </record>
+  </data>
+</openerp>
