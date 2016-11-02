@@ -3,3 +3,4 @@ import doctor_signos_vitales
 import doctor_attentions_diseases_inherit
 import doctor_origen_enfermedad
 import doctor_laboratorio
+import doctor_appointment_inherit
