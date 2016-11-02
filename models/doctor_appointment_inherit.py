@@ -47,6 +47,7 @@ class doctor_appointment(osv.osv):
 		#GET model of the viewpg 
 		data_obj = self.pool.get('ir.model.data')
 
+		_logger.info(appointment_type)
 				#condition
 		if appointment_type == u'Riesgo Biologico':
 			result = data_obj._get_id(cr, uid, 'doctor_biological_risk', 'doctor_atencion_ries_bio_form_view')
