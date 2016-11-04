@@ -26,12 +26,15 @@ import base64
 import sys, os
 
 class doctor_appointment(osv.osv):
+
 	_name = "doctor.appointment"
 	_inherit = "doctor.appointment"
 
 	_columns = {}
 
 	def generate_attentiont(self, cr, uid, ids, context={}):
+
+		res = super(doctor_appointment,self).generate_attentiont(cr, uid, ids, context)
 		doctor_appointment = self.browse(cr, uid, ids, context=context)[0]
 		attentiont_id = self.create_attentiont(cr, uid, doctor_appointment, context=context)
 		# Update appointment state
@@ -46,9 +49,7 @@ class doctor_appointment(osv.osv):
 
 		#GET model of the viewpg 
 		data_obj = self.pool.get('ir.model.data')
-
-		_logger.info(appointment_type)
-				#condition
+		#condition
 		if appointment_type == u'Riesgo Biologico':
 			result = data_obj._get_id(cr, uid, 'doctor_biological_risk', 'doctor_atencion_ries_bio_form_view')
 			view_id = data_obj.browse(cr, uid, result).res_id
@@ -67,6 +68,26 @@ class doctor_appointment(osv.osv):
 				'target' : 'current',
 			}
 
+		elif self.pool.get('doctor.doctor').modulo_instalado(cr, uid, 'doctor_dental_care', context=context):
+
+			if appointment_type == u'Odontológica':
+				result = data_obj._get_id(cr, uid, 'doctor_dental_care', 'view_doctor_hc_odonto_form')
+				view_id = data_obj.browse(cr, uid, result).res_id
+				context['default_patient_id'] = context.get('patient_id')
+				context['default_professional_id'] = profesional_id
+				return {
+					'type': 'ir.actions.act_window',
+					'view_type': 'form',
+					'view_mode': 'form',
+					'res_model': 'doctor.hc.odontologia',
+					'res_id': False,
+					'view_id': [view_id] or False,
+					'type': 'ir.actions.act_window',
+					'context' : context or None,
+					'nodestroy': True,
+					'target' : 'current',
+				}
+
 		else:
 			# Get view to show
 			result = data_obj._get_id(cr, uid, 'doctor', 'view_doctor_attentions_form')
@@ -83,3 +104,7 @@ class doctor_appointment(osv.osv):
 				'nodestroy': True,
 				'target' : 'current',
 			}
+
+		return res
+
+doctor_appointment()
