@@ -36,6 +36,7 @@
                     'views/doctor_origen_enfermedad_view.xml',
                     'data/tipo_cita_riesgo.sql',
                     'data/laboratorios_data.xml',
+                    'views/doctor_report_biological.xml',
 
     ],      
     'installable' : True,

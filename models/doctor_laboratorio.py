@@ -35,6 +35,7 @@ class doctor_laboratorio(osv.osv):
 	_columns = {
 		'name' : fields.char('Nombre', required=True, size=60),
 		'active': fields.boolean('activo'),
+		'fuente': fields.char('Fuente'),
 	}
 
 
@@ -52,6 +53,23 @@ class doctor_attention_laboratorio(osv.osv):
 										   ondelete='restrict'),
 		'fecha': fields.date('Fecha',),
 		'resultado': fields.char('Resultado',),
+
 	}
 
 doctor_attention_laboratorio()
+
+
+class doctor_attention_laboratorio_fuente(osv.osv):
+
+	_name = "doctor.attention.laboratorio_fuente"
+
+	_columns = {
+		'attentiont_id': fields.many2one('doctor.atencion.ries.bio', 'Attention'),
+		'laboratorio_id': fields.many2one('doctor.laboratorio', 'Laboratorio', required=True,
+										   ondelete='restrict'),
+		'fecha': fields.date('Fecha',),
+		'resultado': fields.char('Resultado',),
+
+	}
+
+doctor_attention_laboratorio_fuente()

@@ -76,8 +76,6 @@ class doctor_atencion_riesgo_biol(osv.osv):
 
 		'motivo_consulta': fields.char('Motivo de consulta', size=100, required=False, states={'closed': [('readonly', True)]}),
 		'enfermedad_actual': fields.text('Enfermedad Actual', required=False, help="Enfermedad Actual",	 states={'closed': [('readonly', True)]}),
-
-		'descripcion_accidente': fields.text(u'Descripción breve del accidente: ', help=u"Descripción breve del accidente", required=False, states={'closed': [('readonly', True)]}),
 		'fecha_del_accidente': fields.datetime('Fecha del accidente', states={'closed': [('readonly', True)]}),
 		'laboratorio_inicial_si': fields.boolean('Si', states={'closed': [('readonly', True)]}),
 		'laboratorio_inicial_no': fields.boolean('No', states={'closed': [('readonly', True)]}),
@@ -106,13 +104,10 @@ class doctor_atencion_riesgo_biol(osv.osv):
 		'plantilla_hallazgos_id': fields.many2one('doctor.attentions.recomendaciones', 'Plantillas', states={'closed': [('readonly', True)]}),
 		'laboratorios_realizados': fields.one2many('doctor.attention.laboratorio', 'attentiont_id', 'Laboratorios Realizados',
 											 ondelete='restrict', states={'closed': [('readonly', True)]}),
-		'laboratorios_realizados_fuente': fields.one2many('doctor.attention.laboratorio', 'attentiont_id', 'Laboratorios Realizados a la Fuente',
+		'laboratorios_realizados_fuente': fields.one2many('doctor.attention.laboratorio_fuente', 'attentiont_id', 'Laboratorios Realizados a la Fuente',
 											 ondelete='restrict', states={'closed': [('readonly', True)]}),
 
-
-
 	}
-
 
 
 	def onchange_patient(self, cr, uid, ids, patient_id, context=None):
@@ -197,15 +192,13 @@ class doctor_atencion_riesgo_biol(osv.osv):
 			res['value'][campo]=cuerpo
 		else:
 			res['value'][campo]=''
-
-		_logger.info(res)
+	
 		return res
 
 
 
 	def default_get(self, cr, uid, fields, context=None):
 		res = super(doctor_atencion_riesgo_biol,self).default_get(cr, uid, fields, context=context)
-
 
 
 		if context.get('active_model') == "doctor.patient":
@@ -221,14 +214,14 @@ class doctor_atencion_riesgo_biol(osv.osv):
 		#con esto cargams los items de revision por sistemas
 		ids = self.pool.get('doctor.laboratorio').search(cr,uid,[('active','=',True)],context=context)
 		registros = []
+		registros_fuetes = []
 		for i in self.pool.get('doctor.laboratorio').browse(cr,uid,ids,context=context):
 			registros.append((0,0,{'laboratorio_id' : i.id,}))
+			registros_fuetes.append((0,0,{'laboratorio_id' : i.id,}))
 		#fin carga item revision sistemas
 
-		_logger.info(registros)
-
 		res['laboratorios_realizados'] = registros
-		res['laboratorios_realizados_fuente'] = registros
+		res['laboratorios_realizados_fuente'] = registros_fuetes
 
 		return res
 
@@ -238,6 +231,36 @@ class doctor_atencion_riesgo_biol(osv.osv):
 		'state': 'abierta',
 	}
 
+
+	def write(self, cr, uid, ids, vals, context=None):
+
+		if 'laboratorio_inicial_si' in vals:
+			vals['laboratorio_inicial_si'] = True
+			vals['laboratorio_inicial_no'] = False
+		elif 'laboratorio_inicial_no' in vals:
+			vals['laboratorio_inicial_si'] = False
+			vals['laboratorio_inicial_no'] = True
+		elif 'laboratorio_fuente_si' in vals:
+			vals['laboratorio_fuente_si'] = True
+			vals['laboratorio_fuente_no'] = False
+		elif 'laboratorio_fuente_no' in vals:
+			vals['laboratorio_inicial_si'] = False
+			vals['laboratorio_inicial_no'] = True
+		elif 'terapia_retroviral_si' in vals:
+			vals['terapia_retroviral_si'] = True
+			vals['terapia_retroviral_no'] = False
+		elif 'terapia_retroviral_no' in vals:
+			vals['laboratorio_inicial_si'] = False
+			vals['terapia_retroviral_cual'] = ''
+			vals['laboratorio_inicial_no'] = True
+		elif 'presento_reaccion_terapia_si' in vals:
+			vals['presento_reaccion_terapia_si'] = True
+			vals['presento_reaccion_terapia_no'] = False
+		elif 'presento_reaccion_terapia_no' in vals:
+			vals['presento_reaccion_terapia_si'] = False
+			vals['presento_reaccion_terapia_no'] = True		
+	
+		return super(doctor_atencion_riesgo_biol,self).write(cr, uid, ids, vals, context)
 
 
 doctor_atencion_riesgo_biol()

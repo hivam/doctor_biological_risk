@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" id="doctor_attention_biological_id" model="doctor.atencion.ries.bio" name="doctor_attention_biological"
+                rml="doctor_biological_risk/report/doctor_attention_biological.rml" string="HC-Atención"
+                usage="default"/>
+
+    </data>
+</openerp>

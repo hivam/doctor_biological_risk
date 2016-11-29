@@ -58,8 +58,7 @@
 
           <group colspan="4" col="2">
               <field name="motivo_consulta"/>
-              <field name="enfermedad_actual"/>
-              <field name="descripcion_accidente"/>
+              <field name="enfermedad_actual" placeholder="Descrpción breve del accidente"/>
           </group>
 
           <fieldset class="fieldset_margen">
