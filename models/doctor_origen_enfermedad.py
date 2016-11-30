@@ -41,3 +41,5 @@ class doctor_origen_enfermedad(osv.osv):
 	_defaults = {
 		'active' : True,
 	}
+
+doctor_origen_enfermedad()
