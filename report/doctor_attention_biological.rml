@@ -137,7 +137,7 @@
           <para style="P6">[[ '' ]]</para>
         </td>
         <td>
-          <para style="P6">Aseguradora: [[ (o.patient_id.insurer.id) or removeParentNode('para')]]</para>
+          <para style="P6">Aseguradora: [[ (o.patient_id.insurer.insurer.name) or removeParentNode('para')]]</para>
     </td>
      </tr>
     </blockTable>
@@ -278,17 +278,17 @@
       </blockTable>
       <blockTable colWidths="178, 178, 178" style="Table6">
         <tr>
-          <para style="P4">[[ repeatIn(o.laboratorios_realizados, 'line') ]]</para>
+            <para style="P4">[[ repeatIn(o.laboratorios_realizados, 'line') ]]</para>
             <td>
               <para style="terp_default_8">[[line.laboratorio_id.name]]</para>
             </td>
             <td>
-              <para style="terp_default_8">[[line.fecha or 'Sin diligenciar']]</para>
+              <para style="terp_default_8">[[selecciono_fecha(line.fecha) or removeParentNode('tr')]]</para>
             </td>
             <td>
               <para style="terp_default_8">[[line.resultado or 'Sin diligenciar']]</para>
             </td>
-          </tr>
+        </tr>
       </blockTable>
     </section>
 

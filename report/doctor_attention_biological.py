@@ -36,6 +36,7 @@ class doctor_attention_biological(report_sxw.rml_parse):
 			'select_age': self.select_age,
 			'mostrar_respuesta_si': self.mostrar_respuesta_si,
 			'mostrar_respuesta_no': self.mostrar_respuesta_no,
+			'selecciono_fecha': self.selecciono_fecha,
 		})
 
 	def select_type(self, tipo_usuario):
@@ -59,7 +60,7 @@ class doctor_attention_biological(report_sxw.rml_parse):
 	def select_age(self, age):
 		context = {}
 		context.update({'lang' : self.pool.get('res.users').browse(self.cr, self.uid, self.uid, context=context).lang})
-		attentions = self.pool.get('doctor.attentions')
+		attentions = self.pool.get('doctor.atencion.ries.bio')
 		age_unit = dict(attentions.fields_get(self.cr, self.uid, 'age_unit',context=context).get('age_unit').get('selection')).get(
 			str(age))
 		return age_unit
@@ -67,7 +68,6 @@ class doctor_attention_biological(report_sxw.rml_parse):
 	def mostrar_respuesta_si(self, seleccion):
 		context = {}
 		context.update({'lang' : self.pool.get('res.users').browse(self.cr, self.uid, self.uid, context=context).lang})
-		attentions = self.pool.get('doctor.attentions')
 		respuesta = None	
 		if seleccion:
 			respuesta = 'Si'
@@ -76,12 +76,19 @@ class doctor_attention_biological(report_sxw.rml_parse):
 	def mostrar_respuesta_no(self, seleccion):
 		context = {}
 		context.update({'lang' : self.pool.get('res.users').browse(self.cr, self.uid, self.uid, context=context).lang})
-		attentions = self.pool.get('doctor.attentions')
 		respuesta = None	
 		if seleccion:
 			respuesta = 'No'
-		return respuesta		
+		return respuesta	
 
+
+	def selecciono_fecha(self, fecha):
+		context = {}
+		context.update({'lang' : self.pool.get('res.users').browse(self.cr, self.uid, self.uid, context=context).lang})
+		respuesta = None
+		if fecha:
+			respuesta = fecha
+		return respuesta	
 
 
 report_sxw.report_sxw('report.doctor_attention_biological', 'doctor.atencion.ries.bio',
