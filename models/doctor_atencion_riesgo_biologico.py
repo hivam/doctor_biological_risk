@@ -119,8 +119,6 @@ class doctor_atencion_riesgo_biol(osv.osv):
 
 		values.update({
 			'patient_photo': photo_patient,
-			'age_attention': 20
-
 		})
 		return {'value': values}
 
