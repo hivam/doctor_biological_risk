@@ -465,11 +465,11 @@
           </td>
         </tr>
       </blockTable>
-      [[ o.professional_id or removeParentNode('section') ]]
+      [[ o.patient_id or removeParentNode('section') ]]
       <blockTable colWidths="267.0, 267.0" style="Table6">
         <tr>
           <td>
-            <para style="P6">Nombre: [[ (o.professional_id.username or (removeParentNode('para'))) ]]</para>
+            <para style="P6">Nombre: [[ (o.patient_id.nombre or (removeParentNode('para'))) ]]</para>
           </td>
       
           <td>
