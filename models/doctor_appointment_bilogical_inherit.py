@@ -32,11 +32,36 @@ class doctor_appointment(osv.osv):
 
 	_columns = {}
 
+
+	def create_attentiont_riesgo_biolo(self, cr, uid, doctor_appointment, modelo_crear,  context={}):
+		"""
+		Method that creates an attention from given data.
+		@param doctor_appointment: Appointment method get data from.
+		"""
+		attentiont_obj = modelo_crear
+		# Create attentiont object
+		attentiont = {
+			'patient_id': doctor_appointment.patient_id.id,
+			'professional_id': doctor_appointment.professional_id.id,
+			'origin': doctor_appointment.number,
+		}
+		# Get other attentiont values from appointment partner
+		context['patient_id'] = doctor_appointment.patient_id.id
+		attentiont_id = attentiont_obj.create(cr, uid, attentiont, context=context)
+		# Create number attentiont record
+		attentiont_number = {
+			'attentiont_id': attentiont_id,
+		}
+
+		self.pool.get('doctor.appointment').write(cr, uid, [doctor_appointment.id], attentiont_number, context=context)
+
+		return attentiont_id
+
 	def generate_attentiont(self, cr, uid, ids, context={}):
 
-		res = super(doctor_appointment,self).generate_attentiont(cr, uid, ids, context)
+		#res = super(doctor_appointment,self).generate_attentiont(cr, uid, ids, context)
 		doctor_appointment_variable = self.browse(cr, uid, ids, context=context)[0]
-		attentiont_id = self.create_attentiont(cr, uid, doctor_appointment_variable, context=context)
+		#attentiont_id = self.create_attentiont(cr, uid, doctor_appointment_variable, context=context)
 		# Update appointment state
 		appointment_state = doctor_appointment_variable.state
 		if appointment_state != 'invoiced':
@@ -54,6 +79,7 @@ class doctor_appointment(osv.osv):
 		_logger.info(tipo_historia)
 		#condition
 		if tipo_historia == u'doctor_biological_risk':
+			attentiont_id = self.create_attentiont_riesgo_biolo(cr, uid, doctor_appointment_variable, self.pool.get('doctor.atencion.ries.bio'), context=context)
 			result = data_obj._get_id(cr, uid, 'doctor_biological_risk', 'doctor_atencion_ries_bio_form_view')
 			view_id = data_obj.browse(cr, uid, result).res_id
 			context['default_patient_id'] = context.get('patient_id')
@@ -63,17 +89,17 @@ class doctor_appointment(osv.osv):
 				'view_type': 'form',
 				'view_mode': 'form',
 				'res_model': 'doctor.atencion.ries.bio',
-				'res_id': False,
+				'res_id': attentiont_id or False,
 				'view_id': [view_id] or False,
 				'type': 'ir.actions.act_window',
 				'context' : context or None,
 				'nodestroy': True,
-				'target' : 'current',
 			}
 
 		elif self.pool.get('doctor.doctor').modulo_instalado(cr, uid, 'doctor_dental_care', context=context):
 
 			if tipo_historia == u'doctor_dental_care':
+				attentiont_id = self.create_attentiont_riesgo_biolo(cr, uid, doctor_appointment_variable, self.pool.get('doctor.hc.odontologia'), context=context)
 				result = data_obj._get_id(cr, uid, 'doctor_dental_care', 'view_doctor_hc_odonto_form')
 				view_id = data_obj.browse(cr, uid, result).res_id
 				context['default_patient_id'] = context.get('patient_id')
@@ -83,17 +109,17 @@ class doctor_appointment(osv.osv):
 					'view_type': 'form',
 					'view_mode': 'form',
 					'res_model': 'doctor.hc.odontologia',
-					'res_id': False,
+					'res_id': attentiont_id or False,
 					'view_id': [view_id] or False,
 					'type': 'ir.actions.act_window',
 					'context' : context or None,
 					'nodestroy': True,
-					'target' : 'current',
 				}
 
 		elif self.pool.get('doctor.doctor').modulo_instalado(cr, uid, 'doctor_psychology', context=context):
 
 			if tipo_historia == "doctor_psychology":
+				attentiont_id = self.create_attentiont_riesgo_biolo(cr, uid, doctor_appointment_variable, self.pool.get('doctor.psicologia'), context=context)
 				result = data_obj._get_id(cr, uid, 'doctor_psychology', 'doctor_psicologia_form_view')
 				view_id = data_obj.browse(cr, uid, result).res_id
 				context['default_patient_id'] = context.get('patient_id')
@@ -103,16 +129,16 @@ class doctor_appointment(osv.osv):
 					'view_type': 'form',
 					'view_mode': 'form',
 					'res_model': 'doctor.psicologia',
-					'res_id': False,
+					'res_id': attentiont_id or False,
 					'view_id': [view_id] or False,
 					'type': 'ir.actions.act_window',
 					'context' : context or None,
 					'nodestroy': True,
-					'target' : 'current',
 				}
 
 		else:
 			# Get view to show
+			attentiont_id = self.create_attentiont(cr, uid, doctor_appointment_variable, context=context)
 			result = data_obj._get_id(cr, uid, 'doctor', 'view_doctor_attentions_form')
 			view_id = data_obj.browse(cr, uid, result).res_id
 
@@ -125,9 +151,7 @@ class doctor_appointment(osv.osv):
 				'type': 'ir.actions.act_window',
 				'context' : context,
 				'nodestroy': True,
-				'target' : 'current',
 			}
 
-		return res
 
 doctor_appointment()
