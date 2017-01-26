@@ -32,7 +32,7 @@
               </group>
               </fieldset>
               <fieldset class="fieldset_margen">
-              <legend class="texto_legend">Medico</legend>
+              <legend class="texto_legend">Profesional de la Salud</legend>
               <group col='2'>
               <field name='professional_photo' nolabel='1' widget="image" img_height="50" width="50" height="50"/>
                 <group col='1'>
