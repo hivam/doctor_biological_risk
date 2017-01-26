@@ -1,6 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
-access_doctor_atencion_ries_bio,doctor.atencion.ries.bio,model_doctor_atencion_ries_bio,doctor.group_doctor_physician,1,1,1,0
 access_doctor_attention_laboratorio,doctor.attention.laboratorio,model_doctor_attention_laboratorio,doctor.group_doctor_physician,1,1,1,1
 access_doctor_laboratorio,doctor.laboratorio,model_doctor_laboratorio,doctor.group_doctor_physician,1,1,1,1
 access_doctor_signos_vitales_riesgo_biol,doctor.signos.vitales_riesgo_biol,model_doctor_signos_vitales_riesgo_biol,doctor.group_doctor_physician,1,0,1,1

@@ -30,21 +30,10 @@ from lxml import etree
 class doctor_atencion_riesgo_biol(osv.osv):
 
 
-	_name = 'doctor.atencion.ries.bio'
+	_name = 'doctor.attentions'
+	_inherit = 'doctor.attentions'
 	_order = "date_attention desc"
 
-	def button_closed(self, cr, uid, ids, context=None):
-		return self.write(cr, uid, ids, {'state': 'cerrada'}, context=context)
-
-	def _get_profesional(self, cr, uid, ids, field_name, arg, context=None):
-		res = {}
-		professional_id = self.pool.get("doctor.professional").search(cr, uid, [('user_id', '=', uid)], context=context)
-		for dato in self.browse(cr, uid, ids):
-			
-			for profesional in self.pool.get("doctor.professional").browse(cr, uid, professional_id, context=context):
-	
-				res[dato.id] = profesional.id
-		return res
 
 
 	def _get_especialidad(self, cr, uid, ids, field_name, arg, context=None):
@@ -56,26 +45,10 @@ class doctor_atencion_riesgo_biol(osv.osv):
 				res[dato.id] = profesional.speciality_id.id
 		return res
 
+
+	
 	_columns = {
 
-		'patient_id': fields.many2one('doctor.patient', 'Paciente', ondelete='restrict', readonly=True),
-		'patient_photo': fields.related('patient_id', 'photo', type="binary", relation="doctor.patient", readonly=True),
-		'date_attention': fields.datetime('Fecha de atencion', required=True, readonly=True),
-		'origin': fields.char('Documento origen', size=64,
-							  help="Reference of the document that produced this attentiont.", readonly=True),
-		'professional_id': fields.function(_get_profesional, relation="doctor.professional", type="many2one", store=False,
-									readonly=True, method=True, string="Profesional en la Salud"),
-		'speciality': fields.function(_get_especialidad, relation="doctor.speciality", type="many2one", store=False,
-									readonly=True, method=True, string="Especialidad"),
-		'professional_photo': fields.related('professional_id', 'photo', type="binary", relation="doctor.professional",
-											 readonly=True, store=False),
-		'age_attention': fields.integer('Edad actual', readonly=True),
-		'age_unit': fields.selection([('1', u'Años'), ('2', 'Meses'), ('3', 'Dias'), ], 'Unidad de medida de la edad',
-									 readonly=True),
-		'state': fields.selection([('abierta', 'Abierta'), ('cerrada', 'Cerrada')], 'Estado', readonly=True, required=True),
-
-		'motivo_consulta': fields.char('Motivo de consulta', size=100, required=False, states={'closed': [('readonly', True)]}),
-		'enfermedad_actual': fields.text('Enfermedad Actual', required=False, help="Enfermedad Actual",	 states={'closed': [('readonly', True)]}),
 
 		'descripcion_accidente': fields.text(u'Descripción breve del accidente: ', help=u"Descripción breve del accidente", required=False, states={'closed': [('readonly', True)]}),
 		'fecha_del_accidente': fields.datetime('Fecha del accidente', states={'closed': [('readonly', True)]}),
@@ -100,6 +73,8 @@ class doctor_atencion_riesgo_biol(osv.osv):
 		'tratamiento_recomendaciones': fields.text('Tratamiento y Recomendaciones', states={'closed': [('readonly', True)]}),
 		'laboratorios_control': fields.text('Laboratorios de control', states={'closed': [('readonly', True)]}),
 		'solicitud_consulta': fields.char('Solicitud consulta', states={'closed': [('readonly', True)]}),
+		'speciality': fields.function(_get_especialidad, relation="doctor.speciality", type="many2one", store=False,
+									readonly=True, method=True, string="Especialidad"),
 		'cierre_caso': fields.char('Cierre caso', states={'closed': [('readonly', True)]}),
 		'plantilla_laboratorios_id': fields.many2one('doctor.attentions.recomendaciones', 'Plantillas', states={'closed': [('readonly', True)]}),
 		'plantilla_tratamiento_id': fields.many2one('doctor.attentions.recomendaciones', 'Plantillas', states={'closed': [('readonly', True)]}),
@@ -112,96 +87,6 @@ class doctor_atencion_riesgo_biol(osv.osv):
 
 
 	}
-
-
-
-	def onchange_patient(self, cr, uid, ids, patient_id, context=None):
-		values = {}
-		if not patient_id:
-			return values
-		patient_data = self.pool.get('doctor.patient').browse(cr, uid, patient_id, context=context)
-		photo_patient = patient_data.photo
-
-		values.update({
-			'patient_photo': photo_patient,
-			'age_attention': 20
-
-		})
-		return {'value': values}
-
-	def onchange_professional(self, cr, uid, ids, professional_id, context=None):
-		values = {}
-		if not professional_id:
-			return values
-		professional_data = self.pool.get('doctor.professional').browse(cr, uid, professional_id, context=context)
-		professional_img = professional_data.photo
-		if professional_data.speciality_id.id:
-			professional_speciality = professional_data.speciality_id.id
-			values.update({
-				'speciality': professional_speciality,
-			})
-
-		values.update({
-			'professional_photo': professional_img,
-		})
-		return {'value': values}
-
-
-
-	def calcular_edad(self,fecha_nacimiento):
-		current_date = datetime.today()
-		st_birth_date = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
-		re = current_date - st_birth_date
-		dif_days = re.days
-		age = dif_days
-		age_unit = ''
-		if age < 30:
-			age_attention = age,
-			age_unit = '3'
-
-		elif age > 30 and age < 365:
-			age = age / 30
-			age = int(age)
-			age_attention = age,
-			age_unit = '2'
-
-		elif age >= 365:
-			age = int((current_date.year-st_birth_date.year-1) + (1 if (current_date.month, current_date.day) >= (st_birth_date.month, st_birth_date.day) else 0))
-			age_attention = age,
-			age_unit = '1'
-		
-		return age
-
-	def calcular_age_unit(self,fecha_nacimiento):
-		current_date = datetime.today()
-		st_birth_date = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
-		re = current_date - st_birth_date
-		dif_days = re.days
-		age = dif_days
-		age_unit = ''
-		if age < 30:
-			age_unit = '3'
-		elif age > 30 and age < 365:
-			age_unit = '2'
-
-		elif age >= 365:
-			age_unit = '1'
-
-		return age_unit
-
-	def onchange_plantillas(self, cr, uid, ids, plantilla_id, campo, context=None):
-		res={'value':{}}
-		_logger.info(plantilla_id)
-		if plantilla_id:
-			cuerpo = self.pool.get('doctor.attentions.recomendaciones').browse(cr,uid,plantilla_id,context=context).cuerpo
-			res['value'][campo]=cuerpo
-		else:
-			res['value'][campo]=''
-
-		_logger.info(res)
-		return res
-
-
 
 	def default_get(self, cr, uid, fields, context=None):
 		res = super(doctor_atencion_riesgo_biol,self).default_get(cr, uid, fields, context=context)
@@ -232,12 +117,9 @@ class doctor_atencion_riesgo_biol(osv.osv):
 
 		return res
 
-
-	_defaults = {
-		'date_attention': lambda *a: datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S"),
-		'state': 'abierta',
-	}
-
-
+	def create (cr, uid, vals, context=None):
+		vals['tipo_historia']='hc_riesgo_biologico'
+		res = super(doctor_atencion_riesgo_biol,self).create(cr, uid, vals, context)
+		return res
 
 doctor_atencion_riesgo_biol()
