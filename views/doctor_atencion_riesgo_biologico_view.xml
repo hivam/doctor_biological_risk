@@ -287,7 +287,7 @@
       <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem action="action_doctor_atencion_ries_bio" id="item_doctor_riesgo_biologico" name="Atencion Riesgo Biológico" parent="doctor.menu_doctor_process" sequence="41"/>
+    <menuitem action="action_doctor_atencion_ries_bio" id="item_doctor_riesgo_biologico" name="Atencion Riesgo Biológico" parent="doctor.menu_doctor_process" groups="doctor.group_doctor_physician,doctor.group_doctor_assistant" sequence="41"/>
 
   </data>
 </openerp>
