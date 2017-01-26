@@ -27,7 +27,6 @@ from datetime import date, datetime, timedelta
 from lxml import etree
 
 
-
 class doctor_attentions_diseases(osv.osv):
 
 
@@ -36,7 +35,7 @@ class doctor_attentions_diseases(osv.osv):
 		_rec_name = 'diseases_id'
 		
 		_columns = {
-				'attentiont_riesgo_id': fields.many2one('doctor.atencion.ries.bio', 'Attention'),
+				'attentiont_riesgo_id': fields.many2one('doctor.attentions', 'Attention'),
 		}
 
 doctor_attentions_diseases()

@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
   <data>
-
+    <!-- <record model="ir.ui.view" id="historiaclinica_rcv_filter">
+            <field name="name">doctor.attentions.riesgobio.filter</field>
+            <field name="model">doctor.attentions</field>
+            <field name="inherit_id" ref="doctor.view_doctor_attentions_tree"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                
+            </field>
+    </record> -->
     <record id="doctor_atencion_ries_bio_form_view" model="ir.ui.view">
-      <field name="name">doctor.atencion.ries.bio.form.view</field>
-      <field name="model">doctor.atencion.ries.bio</field>
+      <field name="name">doctor.attentions.riesgobio.form.view</field>
+      <field name="model">doctor.attentions</field>
       <field name="arch" type="xml">
         <form string="HC Riesgo Biológico" version="7.0">
           <header>
             <button string="Finalizar Atencion" name="button_closed" states="abierta" type="object" class="oe_highlight" groups="doctor.group_doctor_physician"/>
-            <field name="state" widget="statusbar" statusbar_visible="abierta,cerrada"/>
+            <field name="state" widget="statusbar" statusbar_visible="open,closed"/>
           </header>
           <group colspan='4' col='2'>
             <fieldset class="fieldset_margen">
@@ -58,7 +66,12 @@
 
           <group colspan="4" col="2">
               <field name="motivo_consulta"/>
+<<<<<<< d48fa4ad42a636eedbf3988a8525c5ce200f9a35
               <field name="enfermedad_actual" placeholder="Descrpción breve del accidente"/>
+=======
+              <field name="actual_disease"/>
+              <field name="descripcion_accidente"/>
+>>>>>>> avance integracion biorisk
           </group>
 
           <fieldset class="fieldset_margen">
@@ -266,8 +279,8 @@
     </record>
 
     <record id="doctor_atencion_ries_bio_tree_view" model="ir.ui.view">
-      <field name="name">doctor.atencion.ries.bio.tree.view</field>
-      <field name="model">doctor.atencion.ries.bio</field>
+      <field name="name">doctor.attentions.riesgobio.tree.view</field>
+      <field name="model">doctor.attentions</field>
       <field name="arch" type="xml">
         <tree string="HC Riesgo Biologico" create="false">
           <field name="patient_id"/>
@@ -282,7 +295,7 @@
 
     <record id="action_doctor_atencion_ries_bio" model="ir.actions.act_window">
       <field name="name">Atencion Riesgo Biológico</field>
-      <field name="res_model">doctor.atencion.ries.bio</field>
+      <field name="res_model">doctor.attentions</field>
       <field name="view_type">form</field>
       <field name="view_mode">tree,form</field>
     </record>

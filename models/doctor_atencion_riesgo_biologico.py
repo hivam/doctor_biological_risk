@@ -30,21 +30,10 @@ from lxml import etree
 class doctor_atencion_riesgo_biol(osv.osv):
 
 
-	_name = 'doctor.atencion.ries.bio'
+	_name = 'doctor.attentions'
+	_inherit = 'doctor.attentions'
 	_order = "date_attention desc"
 
-	def button_closed(self, cr, uid, ids, context=None):
-		return self.write(cr, uid, ids, {'state': 'cerrada'}, context=context)
-
-	def _get_profesional(self, cr, uid, ids, field_name, arg, context=None):
-		res = {}
-		professional_id = self.pool.get("doctor.professional").search(cr, uid, [('user_id', '=', uid)], context=context)
-		for dato in self.browse(cr, uid, ids):
-			
-			for profesional in self.pool.get("doctor.professional").browse(cr, uid, professional_id, context=context):
-	
-				res[dato.id] = profesional.id
-		return res
 
 
 	def _get_especialidad(self, cr, uid, ids, field_name, arg, context=None):
@@ -56,23 +45,9 @@ class doctor_atencion_riesgo_biol(osv.osv):
 				res[dato.id] = profesional.speciality_id.id
 		return res
 
-	_columns = {
 
-		'patient_id': fields.many2one('doctor.patient', 'Paciente', ondelete='restrict', readonly=True),
-		'patient_photo': fields.related('patient_id', 'photo', type="binary", relation="doctor.patient", readonly=True),
-		'date_attention': fields.datetime('Fecha de atencion', required=True, readonly=True),
-		'origin': fields.char('Documento origen', size=64,
-							  help="Reference of the document that produced this attentiont.", readonly=True),
-		'professional_id': fields.function(_get_profesional, relation="doctor.professional", type="many2one", store=False,
-									readonly=True, method=True, string="Profesional en la Salud"),
-		'speciality': fields.function(_get_especialidad, relation="doctor.speciality", type="many2one", store=False,
-									readonly=True, method=True, string="Especialidad"),
-		'professional_photo': fields.related('professional_id', 'photo', type="binary", relation="doctor.professional",
-											 readonly=True, store=False),
-		'age_attention': fields.integer('Edad actual', readonly=True),
-		'age_unit': fields.selection([('1', u'Años'), ('2', 'Meses'), ('3', 'Dias'), ], 'Unidad de medida de la edad',
-									 readonly=True),
-		'state': fields.selection([('abierta', 'Abierta'), ('cerrada', 'Cerrada')], 'Estado', readonly=True, required=True),
+	
+	_columns = {
 
 		'motivo_consulta': fields.char('Motivo de consulta', size=100, required=False, states={'closed': [('readonly', True)]}),
 		'enfermedad_actual': fields.text('Enfermedad Actual', required=False, help="Enfermedad Actual",	 states={'closed': [('readonly', True)]}),
@@ -98,6 +73,8 @@ class doctor_atencion_riesgo_biol(osv.osv):
 		'tratamiento_recomendaciones': fields.text('Tratamiento y Recomendaciones', states={'closed': [('readonly', True)]}),
 		'laboratorios_control': fields.text('Laboratorios de control', states={'closed': [('readonly', True)]}),
 		'solicitud_consulta': fields.char('Solicitud consulta', states={'closed': [('readonly', True)]}),
+		'speciality': fields.function(_get_especialidad, relation="doctor.speciality", type="many2one", store=False,
+									readonly=True, method=True, string="Especialidad"),
 		'cierre_caso': fields.char('Cierre caso', states={'closed': [('readonly', True)]}),
 		'plantilla_laboratorios_id': fields.many2one('doctor.attentions.recomendaciones', 'Plantillas', states={'closed': [('readonly', True)]}),
 		'plantilla_tratamiento_id': fields.many2one('doctor.attentions.recomendaciones', 'Plantillas', states={'closed': [('readonly', True)]}),
@@ -196,7 +173,6 @@ class doctor_atencion_riesgo_biol(osv.osv):
 		return res
 
 
-
 	def default_get(self, cr, uid, fields, context=None):
 		res = super(doctor_atencion_riesgo_biol,self).default_get(cr, uid, fields, context=context)
 
@@ -261,6 +237,11 @@ class doctor_atencion_riesgo_biol(osv.osv):
 			vals['presento_reaccion_terapia_no'] = True		
 	
 		return super(doctor_atencion_riesgo_biol,self).write(cr, uid, ids, vals, context)
+
+	def create (cr, uid, vals, context=None):
+		vals['tipo_historia']='hc_riesgo_biologico'
+		res = super(doctor_atencion_riesgo_biol,self).create(cr, uid, vals, context)
+		return res
 
 
 doctor_atencion_riesgo_biol()

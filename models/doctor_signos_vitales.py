@@ -33,7 +33,7 @@ class doctor_signos_vitales(osv.osv):
 
 
 	_columns = {	
-		'attentiont_id': fields.many2one('doctor.atencion.ries.bio', 'Attention', ondelete='restrict'),
+		'attentiont_id': fields.many2one('doctor.attentions', 'Attention', ondelete='restrict'),
 		'patient_id': fields.many2one('doctor.patient', 'Patient', ondelete='restrict'),
 		'heart_rate': fields.integer(u'Frecuencia Cardíaca', help="Frecuencia cardiaca expresada en latidos por minuto"),
 		'respiratory_rate': fields.integer('Respiratorio', help="Frecuencia respiratoria expresada en respiraciones por minuto"),

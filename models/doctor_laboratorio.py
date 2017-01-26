@@ -48,7 +48,7 @@ class doctor_attention_laboratorio(osv.osv):
 	_name = "doctor.attention.laboratorio"
 
 	_columns = {
-		'attentiont_id': fields.many2one('doctor.atencion.ries.bio', 'Attention'),
+		'attentiont_id': fields.many2one('doctor.attentions', 'Attention'),
 		'laboratorio_id': fields.many2one('doctor.laboratorio', 'Laboratorio', required=True,
 										   ondelete='restrict'),
 		'fecha': fields.date('Fecha',),
