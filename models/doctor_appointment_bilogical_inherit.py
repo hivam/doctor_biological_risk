@@ -69,7 +69,7 @@ class doctor_appointment(osv.osv):
 		self.write(cr, uid, doctor_appointment_variable.id, {'attended': True}, context=context)
 		# Get appoinment type
 		tipo_historia = doctor_appointment_variable.type_id.modulos_id.name
-
+		tipo_cita = doctor_appointment_variable.type_id.name
 		profesional_id = doctor_appointment_variable.schedule_id.professional_id.id
 
 		#GET model of the viewpg 
@@ -100,11 +100,12 @@ class doctor_appointment(osv.osv):
 
 		if self.pool.get('doctor.doctor').modulo_instalado(cr, uid, 'doctor_control', context=context):
 			if tipo_historia == 'doctor_control'  :
+				context['default_patient_id'] = context.get('patient_id')
+				context['default_professional_id'] = profesional_id
+				context['tipo_cita_id'] = tipo_cita
 				attentiont_id = self.create_attentiont_control(cr, uid, doctor_appointment_variable, self.pool.get('doctor.hc.control'), context=context)
 				result = data_obj._get_id(cr, uid, 'doctor_control', 'doctor_hc_control_form_view')
 				view_id = data_obj.browse(cr, uid, result).res_id
-				context['default_patient_id'] = context.get('patient_id')
-				context['default_professional_id'] = profesional_id
 				return {
 					'type': 'ir.actions.act_window',
 					'view_type': 'form',
