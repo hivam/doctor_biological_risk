@@ -66,12 +66,9 @@
 
           <group colspan="4" col="2">
               <field name="motivo_consulta"/>
-<<<<<<< d48fa4ad42a636eedbf3988a8525c5ce200f9a35
               <field name="enfermedad_actual" placeholder="Descrpción breve del accidente"/>
-=======
               <field name="actual_disease"/>
               <field name="descripcion_accidente"/>
->>>>>>> avance integracion biorisk
           </group>
 
           <fieldset class="fieldset_margen">

@@ -56,20 +56,4 @@ class doctor_attention_laboratorio(osv.osv):
 
 	}
 
-doctor_attention_laboratorio()
-
-
-class doctor_attention_laboratorio_fuente(osv.osv):
-
-	_name = "doctor.attention.laboratorio_fuente"
-
-	_columns = {
-		'attentiont_id': fields.many2one('doctor.atencion.ries.bio', 'Attention'),
-		'laboratorio_id': fields.many2one('doctor.laboratorio', 'Laboratorio', required=True,
-										   ondelete='restrict'),
-		'fecha': fields.date('Fecha',),
-		'resultado': fields.char('Resultado',),
-
-	}
-
 doctor_attention_laboratorio_fuente()

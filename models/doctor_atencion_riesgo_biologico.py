@@ -35,22 +35,11 @@ class doctor_atencion_riesgo_biol(osv.osv):
 	_order = "date_attention desc"
 
 
-
-	def _get_especialidad(self, cr, uid, ids, field_name, arg, context=None):
-		res = {}
-		professional_id = self.pool.get("doctor.professional").search(cr, uid, [('user_id', '=', uid)], context=context)
-		for dato in self.browse(cr, uid, ids):
-			for profesional in self.pool.get("doctor.professional").browse(cr, uid, professional_id, context=context):
-	
-				res[dato.id] = profesional.speciality_id.id
-		return res
-
-
-	
 	_columns = {
 
 		'motivo_consulta': fields.char('Motivo de consulta', size=100, required=False, states={'closed': [('readonly', True)]}),
 		'enfermedad_actual': fields.text('Enfermedad Actual', required=False, help="Enfermedad Actual",	 states={'closed': [('readonly', True)]}),
+		'descripcion_accidente': fields.text(u'Descripción breve del accidente: ', help=u"Descripción breve del accidente", required=False, states={'closed': [('readonly', True)]}),
 		'fecha_del_accidente': fields.datetime('Fecha del accidente', states={'closed': [('readonly', True)]}),
 		'laboratorio_inicial_si': fields.boolean('Si', states={'closed': [('readonly', True)]}),
 		'laboratorio_inicial_no': fields.boolean('No', states={'closed': [('readonly', True)]}),
@@ -87,161 +76,15 @@ class doctor_atencion_riesgo_biol(osv.osv):
 	}
 
 
-	def onchange_patient(self, cr, uid, ids, patient_id, context=None):
-		values = {}
-		if not patient_id:
-			return values
-		patient_data = self.pool.get('doctor.patient').browse(cr, uid, patient_id, context=context)
-		photo_patient = patient_data.photo
-
-		values.update({
-			'patient_photo': photo_patient,
-			'age_attention' : self.calcular_edad(patient_data.birth_date),
-			'age_unit' : self.calcular_age_unit(patient_data.birth_date)
-		})
-		return {'value': values}
-
-	def onchange_professional(self, cr, uid, ids, professional_id, context=None):
-		values = {}
-		if not professional_id:
-			return values
-		professional_data = self.pool.get('doctor.professional').browse(cr, uid, professional_id, context=context)
-		professional_img = professional_data.photo
-		if professional_data.speciality_id.id:
-			professional_speciality = professional_data.speciality_id.id
-			values.update({
-				'speciality': professional_speciality,
-			})
-
-		values.update({
-			'professional_photo': professional_img,
-		})
-		return {'value': values}
-
-
-
-	def calcular_edad(self,fecha_nacimiento):
-		current_date = datetime.today()
-		st_birth_date = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
-		re = current_date - st_birth_date
-		dif_days = re.days
-		age = dif_days
-		age_unit = ''
-		if age < 30:
-			age_attention = age,
-			age_unit = '3'
-
-		elif age > 30 and age < 365:
-			age = age / 30
-			age = int(age)
-			age_attention = age,
-			age_unit = '2'
-
-		elif age >= 365:
-			age = int((current_date.year-st_birth_date.year-1) + (1 if (current_date.month, current_date.day) >= (st_birth_date.month, st_birth_date.day) else 0))
-			age_attention = age,
-			age_unit = '1'
-		
-		return age
-
-	def calcular_age_unit(self,fecha_nacimiento):
-		current_date = datetime.today()
-		st_birth_date = datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
-		re = current_date - st_birth_date
-		dif_days = re.days
-		age = dif_days
-		age_unit = ''
-		if age < 30:
-			age_unit = '3'
-		elif age > 30 and age < 365:
-			age_unit = '2'
-
-		elif age >= 365:
-			age_unit = '1'
-
-		return age_unit
-
-	def onchange_plantillas(self, cr, uid, ids, plantilla_id, campo, context=None):
-		res={'value':{}}
-		_logger.info(plantilla_id)
-		if plantilla_id:
-			cuerpo = self.pool.get('doctor.attentions.recomendaciones').browse(cr,uid,plantilla_id,context=context).cuerpo
-			res['value'][campo]=cuerpo
-		else:
-			res['value'][campo]=''
-	
-		return res
-
-
-	def default_get(self, cr, uid, fields, context=None):
-		res = super(doctor_atencion_riesgo_biol,self).default_get(cr, uid, fields, context=context)
-
-
-		if context.get('active_model') == "doctor.patient":
-			id_paciente = context.get('default_patient_id')
-		else:
-			id_paciente = context.get('patient_id')
-
-		if id_paciente:    
-			fecha_nacimiento = self.pool.get('doctor.patient').browse(cr,uid,id_paciente,context=context).birth_date
-			res['age_attention'] = self.calcular_edad(fecha_nacimiento)
-			res['age_unit'] = self.calcular_age_unit(fecha_nacimiento)
-			
-		#con esto cargams los items de revision por sistemas
-		ids = self.pool.get('doctor.laboratorio').search(cr,uid,[('active','=',True)],context=context)
-		registros = []
-		registros_fuetes = []
-		for i in self.pool.get('doctor.laboratorio').browse(cr,uid,ids,context=context):
-			registros.append((0,0,{'laboratorio_id' : i.id,}))
-			registros_fuetes.append((0,0,{'laboratorio_id' : i.id,}))
-		#fin carga item revision sistemas
-
-		res['laboratorios_realizados'] = registros
-		res['laboratorios_realizados_fuente'] = registros_fuetes
-
-		return res
-
-
 	_defaults = {
 		'date_attention': lambda *a: datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S"),
 		'state': 'abierta',
 	}
 
 
-	def write(self, cr, uid, ids, vals, context=None):
-
-		if 'laboratorio_inicial_si' in vals:
-			vals['laboratorio_inicial_si'] = True
-			vals['laboratorio_inicial_no'] = False
-		elif 'laboratorio_inicial_no' in vals:
-			vals['laboratorio_inicial_si'] = False
-			vals['laboratorio_inicial_no'] = True
-		elif 'laboratorio_fuente_si' in vals:
-			vals['laboratorio_fuente_si'] = True
-			vals['laboratorio_fuente_no'] = False
-		elif 'laboratorio_fuente_no' in vals:
-			vals['laboratorio_inicial_si'] = False
-			vals['laboratorio_inicial_no'] = True
-		elif 'terapia_retroviral_si' in vals:
-			vals['terapia_retroviral_si'] = True
-			vals['terapia_retroviral_no'] = False
-		elif 'terapia_retroviral_no' in vals:
-			vals['laboratorio_inicial_si'] = False
-			vals['terapia_retroviral_cual'] = ''
-			vals['laboratorio_inicial_no'] = True
-		elif 'presento_reaccion_terapia_si' in vals:
-			vals['presento_reaccion_terapia_si'] = True
-			vals['presento_reaccion_terapia_no'] = False
-		elif 'presento_reaccion_terapia_no' in vals:
-			vals['presento_reaccion_terapia_si'] = False
-			vals['presento_reaccion_terapia_no'] = True		
-	
-		return super(doctor_atencion_riesgo_biol,self).write(cr, uid, ids, vals, context)
-
 	def create (cr, uid, vals, context=None):
 		vals['tipo_historia']='hc_riesgo_biologico'
 		res = super(doctor_atencion_riesgo_biol,self).create(cr, uid, vals, context)
 		return res
-
 
 doctor_atencion_riesgo_biol()

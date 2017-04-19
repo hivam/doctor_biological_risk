@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record id="doctor_attentions_form_hc_bio" model="ir.ui.view">
+      <field name="name">riesgo bio</field>
+      <field name="model">doctor.attentions</field>
+      <field name="arch" type="xml">
+        <form string="Atenciones Riesgo Biológico" version="7.0" create="true">
+          <group>
+            <field name="patient_id"/>
+            <field name="professional_id"/>
+          </group>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- Riesgo Biológico Tree View -->
+  <record model="ir.ui.view" id="doctor_attentions_tree_hc_bio">
+    <field name="name">riesgo bio</field>
+    <field name="model">doctor.attentions</field>
+    <field name="arch" type="xml">
+      <tree string="Atenciones Riesgo Biológico" version="7.0" create="true">
+            <field name="patient_id"/>
+            <field name="professional_id"/>
+            <field name="date_attention"/>
+            <field name="state"/>
+      </tree>
+    </field>
+  </record>
+
+
+    <record id="action_atentiones" model="ir.actions.act_window">
+      <field name="name">Attentions</field>
+      <field name="res_model">doctor.attentions</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="doctor_attentions_form_hc_bio"/>
+    </record>
+
+
+
+<menuitem
+    id="menu_id_1"
+    name="Riesgo Biológico"
+    action="action_atentiones" parent="doctor.menu_doctor_process"/>
+
+
+
+  </data>
+</openerp>
