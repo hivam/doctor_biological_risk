@@ -56,4 +56,4 @@ class doctor_attention_laboratorio(osv.osv):
 
 	}
 
-doctor_attention_laboratorio_fuente()
+doctor_attention_laboratorio()

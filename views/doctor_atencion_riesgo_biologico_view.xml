@@ -201,7 +201,6 @@
             </fieldset>
             <fieldset>
               <legend class="texto_legend">Laboratorios Realizados a la Fuente</legend>
-              <field name="laboratorios_realizados_fuente" nolabel="1">
                 <tree string="Laboratorios Realizados a la Fuente" editable="top">
                   <field name="laboratorio_id"/>
                   <field name="fecha"/>

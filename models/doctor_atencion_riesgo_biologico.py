@@ -35,6 +35,18 @@ class doctor_atencion_riesgo_biol(osv.osv):
 	_order = "date_attention desc"
 
 
+
+	def _get_especialidad(self, cr, uid, ids, field_name, arg, context=None):
+		res = {}
+		professional_id = self.pool.get("doctor.professional").search(cr, uid, [('user_id', '=', uid)], context=context)
+		for dato in self.browse(cr, uid, ids):
+			for profesional in self.pool.get("doctor.professional").browse(cr, uid, professional_id, context=context):
+	
+				res[dato.id] = profesional.speciality_id.id
+		return res
+
+
+	
 	_columns = {
 
 		'motivo_consulta': fields.char('Motivo de consulta', size=100, required=False, states={'closed': [('readonly', True)]}),
@@ -70,8 +82,7 @@ class doctor_atencion_riesgo_biol(osv.osv):
 		'plantilla_hallazgos_id': fields.many2one('doctor.attentions.recomendaciones', 'Plantillas', states={'closed': [('readonly', True)]}),
 		'laboratorios_realizados': fields.one2many('doctor.attention.laboratorio', 'attentiont_id', 'Laboratorios Realizados',
 											 ondelete='restrict', states={'closed': [('readonly', True)]}),
-		'laboratorios_realizados_fuente': fields.one2many('doctor.attention.laboratorio_fuente', 'attentiont_id', 'Laboratorios Realizados a la Fuente',
-											 ondelete='restrict', states={'closed': [('readonly', True)]}),
+		#'laboratorios_realizados_fuente': fields.one2many('doctor.attention.laboratorio.attentiont_id', 'attentiont_id', 'Laboratorios Realizados a la Fuente', ondelete='restrict', states={'closed': [('readonly', True)]}),
 
 	}
 

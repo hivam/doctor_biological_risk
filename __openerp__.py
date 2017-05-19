@@ -31,12 +31,13 @@
     'depends'     : ['l10n_co_doctor'],
     'data'        : [
                     'security/ir.model.access.csv',
-                    'views/doctor_atencion_riesgo_biologico_view.xml',
+                    #'views/doctor_atencion_riesgo_biologico_view.xml',
                     'views/doctor_signos_vitales_view.xml',
                     'views/doctor_origen_enfermedad_view.xml',
                     'data/tipo_cita_riesgo.sql',
                     'data/laboratorios_data.xml',
                     'views/doctor_report_biological.xml',
+                    'views/prueba_view.xml'
 
     ],      
     'installable' : True,
